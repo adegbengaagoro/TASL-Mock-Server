@@ -4,7 +4,6 @@ const fetchTransactionListing = require('./util/fetchTransactionListing')
 
 // List Transactions
 app.get('/', async (_request, response) => {
-  console.log('🚀 ~ file: index.js ~ line 8 ~ app.get ~ host', host)
   const { data: transactionListing } = await fetchTransactionListing()
 
   response.status(200).json({
