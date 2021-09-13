@@ -49,33 +49,42 @@ app.get('/fetch/transaction/:transactionID', async (request, response) => {
 
 // Fetch Single Transaction by ID using TASL Format
 app.post('/:productApplication/_search', async (request, response) => {
-  let transaction
-  const productApplication = request.params.productApplication
-  const {
-    query: {
-      match: { transactionid: transactionID }
-    }
-  } = request.body
+  try {
+    let transaction
+    const productApplication = request.params.productApplication
+    const {
+      query: {
+        match: { transactionid: transactionID }
+      }
+    } = request.body
 
-  const { data: transactionListing } = await fetchTransactionListing()
+    const { data: transactionListing } = await fetchTransactionListing()
 
-  const transactionIsInArray = transactionListing.some((element) => {
-    return element.hits.hits[0]._source.transaction_id === transactionID
-  })
-
-  if (transactionIsInArray) {
-    transaction = transactionListing.find((element) => {
+    const transactionIsInArray = transactionListing.some((element) => {
       return element.hits.hits[0]._source.transaction_id === transactionID
     })
 
-    response.status(200).send({
-      data: transaction,
-      product_application: productApplication
+    if (transactionIsInArray) {
+      transaction = transactionListing.find((element) => {
+        return element.hits.hits[0]._source.transaction_id === transactionID
+      })
+
+      response.send({
+        data: transaction,
+        product_application: productApplication
+      })
+    }
+
+    response.send({
+      status: 'Error',
+      message: `Transaction with ID, ${transactionID}, not found!`
+    })
+  } catch (TrxnQueryError) {
+    console.log('TrxnQueryError => ', TrxnQueryError)
+
+    response.send({
+      status: 'Error',
+      message: `Transaction with ID, ${transactionID}, not found!`
     })
   }
-
-  response.status(404).json({
-    status: 'Error',
-    message: `Transaction with ID, ${transactionID}, not found!`
-  })
 })
