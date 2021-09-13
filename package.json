@@ -2,10 +2,10 @@
   "name": "tasl-mock-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "npm run index.js"
+    "dev": "nodemon server.js",
+    "start": "npm run server.js"
   },
   "keywords": [],
   "author": "",

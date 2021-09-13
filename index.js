@@ -1,7 +1,5 @@
 const express = require('express')
 const app = express()
-require('dotenv').config()
-const PORT = process.env.PORT
 const fetchTransactionListing = require('./util/fetchTransactionListing')
 
 // List Transactions
@@ -42,4 +40,4 @@ app.get('/fetch/transaction/:transactionID', async (request, response) => {
   })
 })
 
-app.listen(`${PORT}`, () => console.log(`TASL Mock Server running on PORT ${PORT}`))
+module.exports = app
