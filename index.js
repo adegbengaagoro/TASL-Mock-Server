@@ -2,10 +2,12 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const PORT = process.env.PORT
+const mwBasicAuth = require('./middleware/basicAuth')
 const fetchTransactionListing = require('./util/fetchTransactionListing')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(mwBasicAuth)
 
 app.listen(`${PORT}`, () => console.log(`TASL Mock Server listening on port ${PORT}`))
 
@@ -50,7 +52,7 @@ app.get('/fetch/transaction/:transactionID', async (request, response) => {
 // Fetch Single Transaction by ID using TASL Format
 app.post('/:productApplication/_search', async (request, response) => {
   try {
-    let transaction
+    // let transaction
     const productApplication = request.params.productApplication
     const {
       query: {
@@ -64,27 +66,24 @@ app.post('/:productApplication/_search', async (request, response) => {
       return element.hits.hits[0]._source.transaction_id === transactionID
     })
 
-    if (transactionIsInArray) {
-      transaction = transactionListing.find((element) => {
-        return element.hits.hits[0]._source.transaction_id === transactionID
-      })
-
-      response.send({
-        data: transaction,
-        product_application: productApplication
-      })
+    if (!transactionIsInArray) {
+      throw Error('Transaction Record Not Found!')
     }
 
-    response.send({
-      status: 'Error',
-      message: `Transaction with ID, ${transactionID}, not found!`
+    const transaction = transactionListing.find((element) => {
+      return element.hits.hits[0]._source.transaction_id === transactionID
     })
-  } catch (TrxnQueryError) {
-    console.log('TrxnQueryError => ', TrxnQueryError)
+
+    response.send({
+      data: transaction,
+      product_application: productApplication
+    })
+  } catch (fetchTransactionError) {
+    console.log('fetchTransactionError => ', fetchTransactionError)
 
     response.send({
       status: 'Error',
-      message: `Transaction with ID, ${transactionID}, not found!`
+      message: `Transaction not found!`
     })
   }
 })
