@@ -22,7 +22,6 @@ app.get('/', async (_request, response) => {
   })
 })
 
-
 // Fetch a Single Transaction by its ID
 app.get('/fetch/transaction/:transactionID', async (request, response) => {
   let transaction
@@ -52,11 +51,10 @@ app.get('/fetch/transaction/:transactionID', async (request, response) => {
 // Fetch Single Transaction by ID using TASL Format
 app.post('/:productApplication/_search', async (request, response) => {
   try {
-    // let transaction
     const productApplication = request.params.productApplication
     const {
       query: {
-        match: { transactionid: transactionID }
+        match: { transaction_id: transactionID }
       }
     } = request.body
 
@@ -66,7 +64,7 @@ app.post('/:productApplication/_search', async (request, response) => {
       return element.hits.hits[0]._source.transaction_id === transactionID
     })
 
-    if (!transactionIsInArray) {
+    if (transactionIsInArray === false) {
       throw Error('Transaction Record Not Found!')
     }
 
