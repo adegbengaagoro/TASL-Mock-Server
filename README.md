@@ -4,9 +4,7 @@ A Mock Server designed to simulate a DB Instance containing transactions from NI
 It provides endpoints for:
 
 * Listing Transactions (http://localhost/1005)
-<br>
-  The payload of transactions listing is generated using JSON Generator
-<br>
+  * The payload of transactions listing is generated using JSON Generator
 * Fetching a Single Transaction (http://localhost/fetch/transaction/:transactionID)
 
 # Test Transaction IDs
