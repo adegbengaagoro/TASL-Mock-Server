@@ -18,4 +18,4 @@ async function fetchTransactionListing() {
   );
 }
 
-module.exports = fetchTransactionListing;
+module.exports = fetchTransactionListing
